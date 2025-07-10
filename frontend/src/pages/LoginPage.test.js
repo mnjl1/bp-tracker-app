@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Provides extra "matcher" functions for our assertions
 import LoginPage from './LoginPage';
 import { LanguageProvider } from '../contexts/LanguageContext';
@@ -49,6 +49,41 @@ describe('LoginPage', () => {
     // 4. Assert that the input fields now contain the typed values
     expect(emailInput.value).toBe('test@example.com');
     expect(passwordInput.value).toBe('password123');
+  });
+
+  test('calls onLoginSuccess with a token on successful login', async () => {
+    // 1. Mock the global fetch function
+    //    jest.fn() creates a mock function.
+    //    .mockResolvedValueOnce() makes it return a successful promise one time.
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ token: 'fake-jwt-token' }),
+      })
+    );
+
+    // 2. Create a mock function for the onLoginSuccess prop
+    const handleLoginSuccess = jest.fn();
+
+    // 3. Render the component with the mock prop
+    renderWithProviders(<LoginPage onLoginSuccess={handleLoginSuccess} />);
+
+    // 4. Simulate user input
+    fireEvent.change(screen.getByPlaceholderText('Email Address'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'password123' } });
+
+    // 5. Simulate clicking the login button
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
+
+    // 6. Wait for the assertions to pass. This is crucial for async operations.
+    //    We wait until we can assert that our mock function was called.
+    await waitFor(() => {
+      expect(handleLoginSuccess).toHaveBeenCalledTimes(1);
+      expect(handleLoginSuccess).toHaveBeenCalledWith('fake-jwt-token');
+    });
+
+    // 7. Clean up the mock to avoid affecting other tests
+    global.fetch.mockClear();
   });
 
 });
