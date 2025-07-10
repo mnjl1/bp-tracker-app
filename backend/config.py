@@ -12,3 +12,9 @@ class DevelopmentConfig(Config):
     """Development configuration."""
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'bptracker.db')
+
+class TestingConfig(Config):
+    """Testing configuration."""
+    TESTING = True
+    # Use an in-memory SQLite database for tests
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
