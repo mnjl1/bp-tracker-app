@@ -41,6 +41,10 @@ export const translations = {
         delete: 'Delete',
         deleteFailed: 'Failed to delete reading.',
         deleteError: 'An error occurred while deleting.',
+        deleteSuccess: 'Reading successfully deleted.',
+        deleteConfirmTitle: 'Are you sure you want to delete this reading?',
+        confirm: 'Confirm',
+        cancel: 'Cancel',
     },
     ua: {
         // Auth
@@ -80,6 +84,10 @@ export const translations = {
         delete: 'Видалити',
         deleteFailed: 'Не вдалося видалити запис.',
         deleteError: 'Сталася помилка під час видалення.',
+        deleteSuccess: 'Запис успішно видалено.',
+        deleteConfirmTitle: 'Ви впевнені, що хочете видалити цей запис?',
+        confirm: 'Підтвердити',
+        cancel: 'Скасувати',
     }
 };
 

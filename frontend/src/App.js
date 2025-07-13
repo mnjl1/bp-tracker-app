@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { LanguageProvider } from './contexts/LanguageContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -40,6 +41,7 @@ function MainApp() {
 
     return (
         <div className="bg-gray-100 min-h-screen font-sans">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="container mx-auto p-4 sm:p-6 lg:p-8">
                 {page === 'login' && <LoginPage onLoginSuccess={handleLoginSuccess} goToRegister={() => setPage('register')} />}
                 {page === 'register' && <RegisterPage goToLogin={() => setPage('login')} />}

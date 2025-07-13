@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { LanguageContext } from '../contexts/LanguageContext';
 import AddReadingForm from '../components/Dashboard/AddReadingForm';
 import ReadingsList from '../components/Dashboard/ReadingsList';
@@ -47,13 +48,42 @@ export default function DashboardPage({ token, onLogout }) {
             });
             if (response.ok) {
                 setReadings(readings.filter(r => r.id !== readingId));
+                toast.success(t('deleteSuccess'));
             } else {
-                alert(t('deleteFailed'));
+                toast.error(t('deleteFailed'));
             }
         } catch (err) {
-            alert(t('deleteError'));
+            toast.error(t('deleteError'));
         }
     };
+
+    const askForDeleteConfirmation = (readingId) => {
+        toast((toastInstance) => (
+            <div className="flex flex-col items-center space-y-4">
+                <span className="text-center">{t('deleteConfirmTitle')}</span>
+                <div className="flex space-x-4">
+                    <button
+                        onClick={() => {
+                            handleDeleteReading(readingId);
+                            toast.dismiss(toastInstance.id);
+                        }}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg"
+                    >
+                        {t('confirm')}
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(toastInstance.id)}
+                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg"
+                    >
+                        {t('cancel')}
+                    </button>
+                </div>
+            </div>
+        ), {
+            duration: 6000, // Keep the toast open longer for user interaction
+        });
+    };
+
 
     return (
         <div className="space-y-8">
@@ -78,7 +108,7 @@ export default function DashboardPage({ token, onLogout }) {
                 </div>
             </div>
 
-            <ReadingsList readings={readings} onDelete={handleDeleteReading} />
+            <ReadingsList readings={readings} onDelete={askForDeleteConfirmation} />
         </div>
     );
 }
